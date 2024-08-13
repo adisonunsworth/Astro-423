@@ -1,0 +1,50 @@
+Delta V_1 in the RIC frame at [s]:
+ 0 sec
+ [km/s]:
+   -9.689293e-04 x-hat
+   1.222604e-04 y-hat
+   0 z-hat
+
+Position in the RIC frame after [s]:
+ 3600 sec
+ [km]:
+   1 x-hat
+   5.017440e-01 y-hat
+   6.450338e-03 z-hat
+
+Velocity in the RIC frame after [s]:
+ 3600 sec
+ [km/s]:
+   -4.838096e-01 x-hat
+   -9.669854e-01 y-hat
+   -1.441056e+00 z-hat
+
+Delta V_2 in the RIC frame at [s]:
+ 3600 sec
+   -8.868671e-03 x-hat
+   5.299824e-04 y-hat
+   0 z-hat
+
+Position in the RIC frame after [s]:
+ 18000 sec
+ [km]:
+   2.220446e-16 x-hat
+   -1.000000e+00 y-hat
+   0 z-hat
+
+Velocity in the RIC frame after [s]:
+ 18000 sec
+ [km/s]:
+   8.217575e-03 x-hat
+   6.522428e-04 y-hat
+   0 z-hat
+
+Time before final burn [s]:
+   14400 sec
+
+Delta V_3 in the RIC frame at at [s]:
+ 18000 sec
+ [km/s]:
+   -8.217575e-03 x-hat
+   -6.522428e-04 y-hat
+   0 z-hat
