@@ -33,11 +33,7 @@ zulu_offset = longitude / 15; % hrs
 
 local_time  = zulu_time + zulu_offset; % hrs
 
-
 t = local_time * 3600; % time since local midnight - sec
-
-t = local_time * 86400; % time since local midnight - sec
-
 
 theta = 360 * t / (86400); % angle the sun has traveled since local midnight
 
