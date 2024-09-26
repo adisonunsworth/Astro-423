@@ -15,6 +15,13 @@
 %   
 %
 %  References             :
+<<<<<<< HEAD
+=======
+%    Yamanaka, Koji, and Finn Ankersen. "New state transition matrix for 
+%    relative motion on an arbitrary elliptical orbit." J Guid Control Dyn 
+%    25.1 (2002): 60-66.
+%    Spacecraft Formation Flying by Alfriend et. al., Section 5.6
+>>>>>>> cdf8d9a0884154afa52d2098777272e4e3091817
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
