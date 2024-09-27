@@ -68,11 +68,11 @@ LOD = 24*3600; % length of day - seconds
 
 period = 24*3600; % Period - seconds -  in the prompt geo orbit is defined by its period
 a = ((period/(2*pi()))^2*MU)^(1/3); % Semi-Major Axis - km
-
+r_tgt = a; % due to the circular nature of the orbit
 n = sqrt(MU/a^3); %mean motion
 
 % Other Inputs
-
+    
     zulu_time_i = 15; % Hour
     day_of_year = 80; %21 March 2025
     y_ci = 50; % Chase begins 50 km ahead of tgt - km
@@ -222,18 +222,41 @@ name3 = "Final CATS for Option 2";
 units3 = "degrees";
 
 text_output_phase_1(name1,rho_tgt_chase_f,units1,name2,rho_dot_tgt_chase_fo2,units2,name3,CATS_o2,units3,time_name,time)
+
 %% Extrapolation
 
-% %o1
-% while
-%     Xf = HCW(StartAlt,Xi,t);
-% end
-% 
-% 
-% %o2
-% while 
-%     Xf = HCW(StartAlt,Xi,t);
-% end
+tf = [TOF; 12*3600];
+
+tspan1= 0:60:tf(1);
+
+Xi1d=[rho_tgt_chase_i;rho_dot_tgt_chase_i];
+% create vectors for length of tspan1of HCW
+Xf1 = zeros(length(tspan1),6);
+rho1 = zeros(length(tspan1),1);
+
+
+
+%Option 1
+for i = 1:length(tspan1)
+    Xf1(i,:) = HCW(r_tgt-6378.137,Xi1d,tspan1(i));
+    rho1(i) = norm([Xf1(i,1),Xf1(i,2),Xf1(i,3)]);
+end
+
+
+
+% create vectors for length of tspan2 of HCW
+tspan2 = 0:60:(tf(2));
+
+Xi2d=[rho_tgt_chase_i,rho_dot_tgt_chase_i];
+
+Xf2 = zeros(length(tspan2),6);
+rho2 = zeros(length(tspan2),1);
+
+%Option 2
+for i = 1:length(tspan2)
+    Xf2(i,:) = HCW(r_tgt-6378.137,Xi2d,tspan2(i));
+    rho2(i) = norm([Xf1(i,1),Xf1(i,2),Xf1(i,3)]);
+end
 
 %% Plot
 
