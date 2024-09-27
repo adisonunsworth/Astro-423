@@ -116,7 +116,7 @@ x_c1 = -3 * pi() /drift_rate; % change in instaneous center of ellipse
 
 delv_1y =  [0; -n/2 * (x_c1 - x_c0);0];
 
-delv_o1i = [0;delv_1y;0]; % delta V required to change the center of the ellipse
+delv_o1i = delv_1y; % delta V required to change the center of the ellipse, does not include plane change
 
 % Change in zmax for both options
 delv_1z = [0;0;n * (z_max1 - z_max0)];
@@ -173,6 +173,19 @@ units3 = "degrees";
 
 text_output_phase_1(name1,rho_tgt_chase_i,units1,name2,rho_dot_tgt_chase_i,units2,name3,CATS_i,units3,time_name,time)
 
+% Delta V o1 inital
+name1 = "Delta V1 for Option 1";
+var1 = delv_o1i ; 
+time = [0 ; zulu_time_i];
+text_output_phase_1_delv(name1,var1,time)
+
+% Delta V o1 final
+name1 = "Delta V2 for Option 1";
+var1 = delv_o1f ; 
+time = [TOF/3600; zulu_time_o1];
+text_output_phase_1_delv(name1,var1,time)
+
+
 
 time_name = "Final Time for Option 1:";
 time = [TOF/3600; zulu_time_o1]; % time since begining of simulation ; zulu time
@@ -185,6 +198,20 @@ units3 = "degrees";
 
 text_output_phase_1(name1,rho_tgt_chase_f,units1,name2,rho_dot_tgt_chase_fo1,units2,name3,CATS_o1,units3,time_name,time)
 
+
+% Delta V o1 inital
+name1 = "Delta V1 for Option 2";
+var1 = delv_o2i ; 
+time = [wait_time_o2 ; zulu_time_i + wait_time_o2];
+text_output_phase_1_delv(name1,var1,time)
+
+% Delta V o1 final
+name1 = "Delta V2 for Option 2";
+var1 = delv_o2f ; 
+time = [wait_time_o2 + 12; zulu_time_o2];
+text_output_phase_1_delv(name1,var1,time)
+
+
 time_name = "Final Time for Option 2:";
 time = [wait_time_o2 + 12; zulu_time_o2]; % time since begining of simulation ; zulu time
 name1 = "Final Position for Option 2";
@@ -195,6 +222,18 @@ name3 = "Final CATS for Option 2";
 units3 = "degrees";
 
 text_output_phase_1(name1,rho_tgt_chase_f,units1,name2,rho_dot_tgt_chase_fo2,units2,name3,CATS_o2,units3,time_name,time)
+%% Extrapolation
+
+% %o1
+% while
+%     Xf = HCW(StartAlt,Xi,t);
+% end
+% 
+% 
+% %o2
+% while 
+%     Xf = HCW(StartAlt,Xi,t);
+% end
 
 %% Plot
 
