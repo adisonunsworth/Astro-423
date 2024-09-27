@@ -71,10 +71,6 @@ a = ((period/(2*pi()))^2*MU)^(1/3); % Semi-Major Axis - km
 
 n = sqrt(MU/a^3); %mean motion
 
-%time of flight
-TOF_p = 2.5; % period # of periods
-TOF = TOF_p * period; %period - sec
-
 % Other Inputs
 
     zulu_time_i = 15; % Hour
@@ -89,8 +85,6 @@ TOF = TOF_p * period; %period - sec
     z_max1 = .1; % maximum distance in the z direction km
     C = 0.5; % semi-minor axis km 
     x_c0 = 0; % x center of the ellipse km
-    % I would like to enter the NMC at z =  0, and create a burn so that z_max
-    % is at M = 180 and M = 0
 
     rho_tgt_chase_i = [0;y_ci;0]; % inital position of the tgt to the chase - km
     rho_dot_tgt_chase_i = [0;0;0]; % inital velocity of the tgt to the chase - km/s
@@ -99,24 +93,6 @@ TOF = TOF_p * period; %period - sec
     
 % Inital Cats
 [CATS_i,local_time_i] = lighting(zulu_time_i,longitude_i,rho_tgt_chase_i,day_of_year);
-
-
-    y_c0 = 50; % Chase begins 50 km ahead of tgt - km
-    z_max0 = 0; % inital Condition
-    longitude_i = -75; % initial longitude degrees west of zulu;
-
-    rho_tgt_chase = [0;y_c0;0]; % inital position of the tgt to the chase - km
-
-    % Inital Cats
-[CATS_i,local_time_i] = lighting(zulu_time_i,longitude_i,rho_tgt_chase,day_of_year);
-
-
-% Desired Characteristics
-z_max1 = .1; % maximum distance in the z direction km
-C = 0.5; % semi-minor axis km 
-x_c0 = 0; % x center of the ellipse km
-% I would like to enter the NMC at z =  0, and create a burn so that z_max
-% is at M = 180 and M = 0
 
 % Desired Transfer Characteristics
 max_time = 2.5 * LOD; % max time to get into an orbit defined by C - seconds
@@ -138,16 +114,7 @@ drift_rate = (y_ci - C*2) * TOF_p/(2*pi()); % desired drift raft to get to the t
 
 x_c1 = -3 * pi() /drift_rate; % change in instaneous center of ellipse
 
-delv_1y =  [0;n/2 * (x_c1 - x_c0);0];
-
-%% Option 1 Burn directly into Transfer then into NMC
-
-% Xc to obtain desired State
-drift_rate = (y_c0 - C*2) * TOF_p/(2*pi()); % desired drift raft to get to the target orbit within the given time - km/ period 
-
-x_c1 = -3 * pi() /drift_rate; % change in instaneous center of ellipse
-
-delv_1y =  -n/2 * (x_c1 - x_c0);
+delv_1y =  [0; -n/2 * (x_c1 - x_c0);0];
 
 delv_o1i = [0;delv_1y;0]; % delta V required to change the center of the ellipse
 
@@ -163,10 +130,6 @@ zulu_time_o1 = zulu_time_i + TOF/3600; % zulu time at final Burn for optino 1 - 
 
 [CATS_o1,local_time1_o1] = lighting(zulu_time_o1,longitude_i,rho_tgt_chase_i,day_of_year); %CATs at second Delta V burn for option 1
 
-delv_1z = n * (z_max1 - z_max0);
-
-delv_o1f = [0;delv_1y;delv_1z];
-
 %% Option 2 Burn into NMC to NMC
 % travel time is half of the period
 % The burn should occour at 1800 LT in order to achieve CATS = 0
@@ -178,14 +141,12 @@ travel_time_hlf_NMC = period/2; % Travel Time for half of NMC
 
 y_c1_o2 = (y_ci + C * 2)/2; % calculation for transition NMC centered halfway between the desired NMC and current location
 delv_1x = n/2 * (y_c1_o2 - y_ci);
-y_c1_o2 = (y_c0 + C * 2)/2; % calculation for transition NMC centered halfway between the desired NMC and current location
-delv_1x = n/2 * (y_c1_o2 - y_c0);
 
 % There should be issue with energy matching condition because there was
 % no change in relative velocity in the y direction.
 %0 == 6 * n * x_c0 + 3 * delv1(2) % check to determine if there is an energy matching condition.
 
-delv_o2i = [delv_1x; 0  ; delv_1z]; % Inital Delta V burn for Option 2
+delv_o2i = delv_1x + delv_1z; % Inital Delta V burn for Option 2
 
 % Change y_c1 to y_c0
 delv_o2f = [-delv_1x; 0  ; 0]  + delv_s_to_NMC ; % Final Delta V burn for Option 2
@@ -193,16 +154,16 @@ delv_o2f = [-delv_1x; 0  ; 0]  + delv_s_to_NMC ; % Final Delta V burn for Option
 % Total Delta V
 DelV_total = abs(norm(delv_o2i)) + abs(norm(delv_o2f));
 
+rho_dot_tgt_chase_fo2 = delv_s_to_NMC + delv_1z;
+
 % CATS Check
 zulu_time_o2 = zulu_time_i + wait_time_o2 + 12; % time of inital Zulu + time passed
-
-
 
 [CATS_o2,local_time1_o2] = lighting(zulu_time_o2,longitude_i,rho_tgt_chase_f,day_of_year); %CATs at second Delta V burn for option 2
 
 %% Output Text
 time_name = "Inital Time";
-time = [0; zulu_time_i]; % time since begining of simulation ; zulu time
+time = [0 ; zulu_time_i]; % time since begining of simulation ; zulu time
 name1 = "Inital Position";
 units1 = "km";
 name2 = "Inital Velocity";
@@ -213,7 +174,7 @@ units3 = "degrees";
 text_output_phase_1(name1,rho_tgt_chase_i,units1,name2,rho_dot_tgt_chase_i,units2,name3,CATS_i,units3,time_name,time)
 
 
-time_name = "Final Time for Option 1";
+time_name = "Final Time for Option 1:";
 time = [TOF/3600; zulu_time_o1]; % time since begining of simulation ; zulu time
 name1 = "Final Position for Option 1";
 units1 = "km";
@@ -222,44 +183,18 @@ units2 = "km/s";
 name3 = "Final CATS for Option 1";
 units3 = "degrees";
 
+text_output_phase_1(name1,rho_tgt_chase_f,units1,name2,rho_dot_tgt_chase_fo1,units2,name3,CATS_o1,units3,time_name,time)
 
-text_output_phase_1(name1,rho_tgt_chase_i,units1,name2,rho_dot_tgt_chase_fo1,units2,name3,CATS_o1,units3,time_name,time)
-
-time_name = "Time for Option 1";
-time = [TOF/3600; zulu_time_o1]; % time since begining of simulation ; zulu time
-name1 = "Final Position for Option 1";
+time_name = "Final Time for Option 2:";
+time = [wait_time_o2 + 12; zulu_time_o2]; % time since begining of simulation ; zulu time
+name1 = "Final Position for Option 2";
 units1 = "km";
-name2 = "Final Velocity for Option 1";
+name2 = "Final Velocity for Option 2";
 units2 = "km/s";
-name3 = "Final CATS for Option 1";
+name3 = "Final CATS for Option 2";
 units3 = "degrees";
 
-text_output_phase_1(name1,rho_tgt_chase_i,units1,name2,rho_dot_tgt_chase_fo1,units2,name3,CATS_o1,units3,time_name,time)
-
-
+text_output_phase_1(name1,rho_tgt_chase_f,units1,name2,rho_dot_tgt_chase_fo2,units2,name3,CATS_o2,units3,time_name,time)
 
 %% Plot
 
-
-delv_o2i = [delv_1x; 0  ; delv_1z];
-
-% Change y_c1 to y_c1
-delv_o2f = [-delv_1x; 0  ; 0];
-
-% Total Delta V
-DelV_total = norm(abs(delv_o2i) + abs(delv_o2f));
-
-% CATS Check
-zulu_time_o2 = zulu_time_i + wait_time_o2 + 12;
-
-% Changes DOY based on Changes in zulu time 
-while zulu_time_o2 >= 24 
-    if zulu_time_o2 >= 24 
-        day_of_year = day_of_year +1;
-        zulu_time_o2 = zulu_time_o2 - 24;
-    end
-end
-
-rho_tgt_chase = [0;C*2;0]; %this is not the true vector but represents the 
-
-[CATS_o2,local_time1_o2] = lighting(zulu_time_o2,longitude_i,rho_tgt_chase,day_of_year);
