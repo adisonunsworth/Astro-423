@@ -185,8 +185,6 @@ var1 = delv_o1f ;
 time = [TOF/3600; zulu_time_o1];
 text_output_phase_1_delv(name1,var1,time)
 
-
-
 time_name = "Final Time for Option 1:";
 time = [TOF/3600; zulu_time_o1]; % time since begining of simulation ; zulu time
 name1 = "Final Position for Option 1";
@@ -197,7 +195,6 @@ name3 = "Final CATS for Option 1";
 units3 = "degrees";
 
 text_output_phase_1(name1,rho_tgt_chase_f,units1,name2,rho_dot_tgt_chase_fo1,units2,name3,CATS_o1,units3,time_name,time)
-
 
 % Delta V o1 inital
 name1 = "Delta V1 for Option 2";
@@ -210,7 +207,6 @@ name1 = "Delta V2 for Option 2";
 var1 = delv_o2f ; 
 time = [wait_time_o2 + 12; zulu_time_o2];
 text_output_phase_1_delv(name1,var1,time)
-
 
 time_name = "Final Time for Option 2:";
 time = [wait_time_o2 + 12; zulu_time_o2]; % time since begining of simulation ; zulu time
@@ -234,15 +230,11 @@ Xi1d=[rho_tgt_chase_i;rho_dot_tgt_chase_i];
 Xf1 = zeros(length(tspan1),6);
 rho1 = zeros(length(tspan1),1);
 
-
-
-%Option 1
+% Option 1
 for i = 1:length(tspan1)
     Xf1(i,:) = HCW(r_tgt-6378.137,Xi1d,tspan1(i));
     rho1(i) = norm([Xf1(i,1),Xf1(i,2),Xf1(i,3)]);
 end
-
-
 
 % create vectors for length of tspan2 of HCW
 tspan2 = 0:60:(tf(2));
@@ -255,7 +247,7 @@ rho2 = zeros(length(tspan2),1);
 %Option 2
 for i = 1:length(tspan2)
     Xf2(i,:) = HCW(r_tgt-6378.137,Xi2d,tspan2(i));
-    rho2(i) = norm([Xf1(i,1),Xf1(i,2),Xf1(i,3)]);
+    rho2(i) = norm([Xf2(i,1),Xf2(i,2),Xf2(i,3)]);
 end
 
 %% Plot
